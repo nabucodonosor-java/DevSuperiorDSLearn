@@ -1,10 +1,13 @@
 package com.devsupeior.dslearn.entities;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.devsupeior.dslearn.entities.pk.EnrollmentPK;
@@ -12,30 +15,33 @@ import com.devsupeior.dslearn.entities.pk.EnrollmentPK;
 @Entity
 @Table(name = "tb_enrollment")
 public class Enrollment {
-	
+
 	@EmbeddedId
 	private EnrollmentPK id = new EnrollmentPK();
-	
+
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant enrollMoment;
-	
+
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant refundMoment;
 	private boolean available;
 	private boolean onlyUpdate;
 
+	@ManyToMany(mappedBy = "enrollmentsDone")
+	private Set<Lesson> lessonsDone = new HashSet<>();
+
 	public User getStudents() {
 		return id.getUser();
 	}
-	
+
 	public void setStudents(User user) {
 		id.setUser(user);
 	}
-	
+
 	public Offer getOffers() {
 		return id.getOffer();
 	}
-	
+
 	public void setOffers(Offer offer) {
 		id.setOffer(offer);
 	}
@@ -70,6 +76,10 @@ public class Enrollment {
 
 	public void setOnlyUpdate(boolean onlyUpdate) {
 		this.onlyUpdate = onlyUpdate;
+	}
+	
+	public Set<Lesson> getLessonsDone() {
+		return lessonsDone;
 	}
 
 	@Override
