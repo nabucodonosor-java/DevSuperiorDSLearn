@@ -1,9 +1,10 @@
 package com.devsupeior.dslearn.entities;
 
+
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,35 +12,43 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_offer")
-public class Offer implements Serializable {
+@Table(name = "tb_reply")
+public class Reply implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String edition;
-	
+
+	@Column(columnDefinition="TEXT")	
+	private String body;
+
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant startMoment;
-	
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant endMoment;
+	private Instant moment;
+
+	@ManyToOne
+	@JoinColumn(name = "topic_id")
+	private Topic topic;
 	
 	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
+	@JoinColumn(name = "author_id")
+	private User author;
 	
-	@OneToMany(mappedBy = "offer")
-	private List<Resource> resources = new ArrayList<>();
+	@ManyToMany
+	@JoinTable(name = "tb_reply_likes",
+		joinColumns = @JoinColumn(name = "reply_id"),
+		inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	private Set<User> likes = new HashSet<>();
 	
-	@OneToMany(mappedBy = "offer")
-	private List<Topic> topics = new ArrayList<>();
+	public Reply() {
+	}
 
 	public Long getId() {
 		return id;
@@ -49,40 +58,40 @@ public class Offer implements Serializable {
 		this.id = id;
 	}
 
-	public String getEdition() {
-		return edition;
+	public String getBody() {
+		return body;
 	}
 
-	public void setEdition(String edition) {
-		this.edition = edition;
+	public void setBody(String body) {
+		this.body = body;
 	}
 
-	public Instant getStartMoment() {
-		return startMoment;
+	public Instant getMoment() {
+		return moment;
 	}
 
-	public void setStartMoment(Instant startMoment) {
-		this.startMoment = startMoment;
+	public void setMoment(Instant moment) {
+		this.moment = moment;
 	}
 
-	public Instant getEndMoment() {
-		return endMoment;
+	public Topic getTopic() {
+		return topic;
 	}
 
-	public void setEndMoment(Instant endMoment) {
-		this.endMoment = endMoment;
+	public void setTopic(Topic topic) {
+		this.topic = topic;
 	}
 
-	public Course getCourse() {
-		return course;
+	public User getAuthor() {
+		return author;
 	}
 
-	public void setCourse(Course course) {
-		this.course = course;
+	public void setAuthor(User author) {
+		this.author = author;
 	}
-	
-	public List<Resource> getResources() {
-		return resources;
+
+	public Set<User> getLikes() {
+		return likes;
 	}
 
 	@Override
@@ -101,7 +110,7 @@ public class Offer implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Offer other = (Offer) obj;
+		Reply other = (Reply) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -109,5 +118,4 @@ public class Offer implements Serializable {
 			return false;
 		return true;
 	}
-
 }
