@@ -85,6 +85,14 @@ public abstract class Lesson implements Serializable {
 	public Set<Enrollment> getEnrollmentsDone() {
 		return enrollmentsDone;
 	}
+	
+	public List<Deliver> getDeliveries() {
+		return deliveries;
+	}
+
+	public List<Topic> getTopics() {
+		return topics;
+	}
 
 	@Override
 	public int hashCode() {
@@ -110,5 +118,4 @@ public abstract class Lesson implements Serializable {
 			return false;
 		return true;
 	}
-
 }
